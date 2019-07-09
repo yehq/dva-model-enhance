@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`class model 1`] = `
+Object {
+  "effects": Object {
+    "handleMessage": [Function],
+  },
+  "namespace": "test",
+  "reducers": Object {
+    "setName": [Function],
+    "setState": [Function],
+  },
+  "state": Object {
+    "age": 1,
+    "message": "",
+    "name": "initialName",
+  },
+  "subscriptions": Object {},
+}
+`;
