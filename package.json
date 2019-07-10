@@ -1,8 +1,9 @@
 {
     "name": "dva-model-enhance",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "use classes enhance dva model",
-    "main": "index.js",
+    "main": "./lib/index.js",
+    "type": "./lib/index.d.ts",
     "scripts": {
         "test": "jest -u",
         "build": "tsc -w"

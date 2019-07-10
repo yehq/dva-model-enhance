@@ -19,5 +19,5 @@
         "experimentalDecorators": true
     },
     "exclude": ["lib", "node_modules"],
-    "include": ["src", "typings.d.ts", "__tests__"]
+    "include": ["src", "typings.d.ts"]
 }
