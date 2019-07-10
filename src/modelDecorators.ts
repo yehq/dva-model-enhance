@@ -36,10 +36,8 @@ export function reducer(target: any, propertyKey: string, descriptor: PropertyDe
     // 调用 reducer 时 同步 state 到当前 class 实例
     target.$$modelInfo.reducers[propertyKey] = (state: any, action: AnyAction) => {
         that.state = state;
-        target.state = state;
         const newState = descriptor.value.apply(that, action.payload);
         that.state = newState;
-        target.state = newState;
         return newState;
     };
     // 让修饰的方法 返回 redux action
