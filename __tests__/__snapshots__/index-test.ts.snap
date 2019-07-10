@@ -3,10 +3,33 @@
 exports[`class model 1`] = `
 Object {
   "effects": Object {
+    "fetchContent": [Function],
     "handleMessage": [Function],
   },
   "namespace": "test",
   "reducers": Object {
+    "setContent": [Function],
+    "setName": [Function],
+    "setState": [Function],
+  },
+  "state": Object {
+    "age": 1,
+    "message": "",
+    "name": "initialName",
+  },
+  "subscriptions": Object {},
+}
+`;
+
+exports[`class model snapshot 1`] = `
+Object {
+  "effects": Object {
+    "fetchContent": [Function],
+    "handleMessage": [Function],
+  },
+  "namespace": "test",
+  "reducers": Object {
+    "setContent": [Function],
     "setName": [Function],
     "setState": [Function],
   },

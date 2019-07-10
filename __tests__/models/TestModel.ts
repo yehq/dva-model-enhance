@@ -1,4 +1,4 @@
-import BaseModel from './BaseModel';
+import SecondModel from './SecondModel';
 import { reducer, effect, dvaModel } from '../../src';
 
 export interface TestModelState {
@@ -15,11 +15,7 @@ export interface TestModelState {
         message: '',
     },
 })
-class TestModel extends BaseModel<TestModelState> {
-    getName() {
-        console.log(this, 'get state');
-    }
-
+class TestModel extends SecondModel<TestModelState> {
     @effect()
     *handleMessage(name: string, age: number) {
         yield this.effects.put(
