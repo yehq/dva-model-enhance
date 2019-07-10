@@ -1,11 +1,14 @@
 import { EffectsCommandMap as DvaEffectsCommandMap } from 'dva';
-import { reducer } from '../../../src';
+import { reducer, dvaModel } from '../../../src';
 
 export interface EffectsCommandMap extends DvaEffectsCommandMap {
     put: any;
     call: any;
 }
 
+@dvaModel({
+    state: {},
+})
 class BaseModel<T extends object> {
     effects!: EffectsCommandMap;
     state!: T;

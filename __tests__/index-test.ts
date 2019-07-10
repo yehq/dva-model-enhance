@@ -1,9 +1,8 @@
 import TestModel from './models/TestModel';
+import { getModel } from '../src';
 
 it('class model', () => {
-    const testModel = new TestModel();
-    const prototype = Reflect.getPrototypeOf(testModel) as any;
-    const modelInfo = prototype.$$modelInfo;
+    const modelInfo = getModel(TestModel);
     expect(modelInfo).toMatchSnapshot();
 });
 

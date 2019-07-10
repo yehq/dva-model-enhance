@@ -11,13 +11,13 @@ npm install dva-model-enhance
 ```
 // ./example/dva/models/BaseModel.ts
 import { EffectsCommandMap as DvaEffectsCommandMap } from 'dva';
-import { reducer } from '../../../src';
+import { reducer, dvaModel } from '../../../src';
 
 export interface EffectsCommandMap extends DvaEffectsCommandMap {
     put: any;
     call: any;
 }
-
+@dvaModel({})
 class BaseModel<T extends object> {
     effects!: EffectsCommandMap;
     state!: T;
@@ -86,13 +86,14 @@ dva app 加载 model
 // ./example/dva/index.ts
 import dva from 'dva';
 import TestModel from './models/TestModel';
+import { getModel } from '../../src';
 
 const app = dva({
     namespacePrefixWarning: false, // 取消 dva 的警告
 });
 (window as any).dvaApp = app;
 
-app.use((TestModel.prototype as any).$$modelInfo); // 加载 dva model
+app.use(getModel(TestModel)); // 加载 dva model
 
 ```
 
