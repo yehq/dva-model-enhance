@@ -1,19 +1,27 @@
 import 'reflect-metadata';
 import modelExtend from 'dva-model-extend';
-import { DvaModelOptions } from '../interfaces';
-import { NAMESPACE, MODEL, EFFECTS, REDUCERS } from '../symbols';
+import { DvaModelOptions, SubscriptionPath } from '../interfaces';
+import { NAMESPACE, MODEL, EFFECTS, REDUCERS, SUBSCRIPTIONS, PATH } from '../symbols';
+import { Subscription } from 'dva';
+import { matchPath } from 'react-router';
 
 function model(dvaModelOptions: DvaModelOptions) {
     const { namespace, state = {} } = dvaModelOptions;
     return (target: Function) => {
         Reflect.defineMetadata(NAMESPACE, namespace, target.prototype);
-        const effects = Reflect.getMetadata(EFFECTS, target.prototype);
-        const reducers = Reflect.getMetadata(REDUCERS, target.prototype);
+        const effects = Reflect.getMetadata(EFFECTS, target.prototype) || {};
+        const reducers = Reflect.getMetadata(REDUCERS, target.prototype) || {};
+        const subscriptions = Reflect.getMetadata(SUBSCRIPTIONS, target.prototype) || {};
+        const paths = Reflect.getMetadata(PATH, target.prototype);
+        if (paths) {
+            subscriptions.__pathsListener = getPathsListener(paths);
+        }
         const model = {
             namespace,
             state,
             effects,
             reducers,
+            subscriptions,
         };
         const parentProto = Reflect.getPrototypeOf(target.prototype) as any;
 
@@ -27,3 +35,21 @@ function model(dvaModelOptions: DvaModelOptions) {
 }
 
 export default model;
+
+function getPathsListener(subscriptionPaths: SubscriptionPath[]): Subscription {
+    return ({ history, dispatch }) => {
+        return history.listen((location, action) => {
+            const { pathname } = location;
+            subscriptionPaths.forEach(({ options, url, listener }) => {
+                const result = matchPath<any>(pathname, {
+                    path: url,
+                    ...options,
+                    strict: false,
+                });
+                if (result) {
+                    listener(result, dispatch, location, action);
+                }
+            });
+        });
+    };
+}
