@@ -1,0 +1,14 @@
+{
+    "extends": "./tsconfig.json",
+    "compilerOptions": {
+        "lib": ["esnext"],
+        "target": "es5",
+        "types": ["reflect-metadata"],
+        "noImplicitThis": true,
+        "noUnusedLocals": true,
+        "moduleResolution": "node",
+        "experimentalDecorators": true,
+        "emitDecoratorMetadata": true
+    },
+    "include": ["__tests__", "src"]
+}

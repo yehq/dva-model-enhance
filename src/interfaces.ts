@@ -8,6 +8,8 @@ export interface DvaModelOptions {
     namespace?: string;
     // dva model state
     state?: any;
+    // dva model state key
+    stateKey?: string;
 }
 
 export interface EffectOptions {

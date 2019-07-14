@@ -80,20 +80,36 @@ export default TestModel;
 
 ```
 
+统一加载 model 实例
+
+```
+// ./example/dva/actions.ts
+import TestModel from './models/TestModel';
+
+export default {
+    test: new TestModel(),
+};
+
+```
+
 dva app 加载 model
 
 ```
 // ./example/dva/index.ts
 import dva from 'dva';
 import TestModel from './models/TestModel';
-import { getModel } from '../../src';
+import { getModel, modelsContainer } from '../../src';
+import actions from './actions';
 
 const app = dva({
     namespacePrefixWarning: false, // 取消 dva 的警告
 });
 (window as any).dvaApp = app;
 
+// 加载所有实例 用来动态设置 所有 model function 的 this 指向，根据namespace来匹配实例
+modelsContainer.put(actions);
 app.use(getModel(TestModel)); // 加载 dva model
+
 
 ```
 
@@ -103,13 +119,12 @@ app.use(getModel(TestModel)); // 加载 dva model
 // ./example/dva/components/TestCom.tsx
 import React from 'react';
 import { connect } from 'dva';
-import TestModel, { TestModelState } from '../models/TestModel';
-
-const testModel = new TestModel();
+import { TestModelState } from '../models/TestModel';
+import actions from '../actions';
 
 class TestCom extends React.Component<any> {
     handleClick = () => {
-        this.props.dispatch(testModel.handleMessage('name', 2));
+        this.props.dispatch(actions.test.handleMessage('name', 2));
     };
     render() {
         return <div onClick={this.handleClick}>click</div>;

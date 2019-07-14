@@ -11,7 +11,7 @@ export interface EffectsCommandMap extends DvaEffectsCommandMap {
 })
 class BaseModel<T extends object> {
     effects!: EffectsCommandMap;
-    state!: T;
+    state: T;
 
     @reducer
     setState(state: Partial<T>) {

@@ -1,14 +1,17 @@
 import 'reflect-metadata';
 import { AnyAction } from 'redux';
-import { REDUCERS, NAMESPACE } from '../symbols';
+import { REDUCERS, NAMESPACE, TEMPORARY_NAMESPACE, STATE_KEY } from '../symbols';
+import modelsContainer from '../modelsContainer';
 
 function reducer(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    let that = target;
     // 调用 reducer 时 同步 state 到当前 class 实例
     const func = (state: any, action: AnyAction) => {
-        that.state = state;
-        const newState = descriptor.value.apply(that, action.payload);
-        that.state = newState;
+        const namespace = action.type.split('/')[0];
+        const currentThis = modelsContainer.get(namespace) || target;
+        const stateKey = Reflect.getMetadata(STATE_KEY, target);
+        currentThis[stateKey] = state;
+        const newState = descriptor.value.apply(currentThis, action.payload);
+        currentThis[stateKey] = newState;
         return newState;
     };
     if (!Reflect.hasOwnMetadata(REDUCERS, target)) {
@@ -21,9 +24,9 @@ function reducer(target: any, propertyKey: string, descriptor: PropertyDescripto
     return {
         ...descriptor,
         value: function(...args: any[]) {
-            that = this;
+            const namespace = Reflect.getMetadata(NAMESPACE, this) || Reflect.getMetadata(TEMPORARY_NAMESPACE, this);
             return {
-                type: `${Reflect.getMetadata(NAMESPACE, this)}/${propertyKey}`,
+                type: `${namespace}/${propertyKey}`,
                 payload: args,
             } as any;
         },

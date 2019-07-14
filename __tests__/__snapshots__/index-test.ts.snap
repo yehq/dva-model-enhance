@@ -13,13 +13,12 @@ Object {
     "setState": [Function],
   },
   "state": Object {
+    "a": 1,
     "age": 1,
+    "base": "12123123",
     "message": "",
     "name": "initialName",
   },
-  "subscriptions": Object {
-    "__pathsListener": [Function],
-    "subscriptionTest": [Function],
-  },
+  "subscriptions": Object {},
 }
 `;

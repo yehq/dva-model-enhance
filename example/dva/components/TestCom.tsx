@@ -1,12 +1,11 @@
 import React from 'react';
 import { connect } from 'dva';
-import TestModel, { TestModelState } from '../models/TestModel';
-
-const testModel = new TestModel();
+import { TestModelState } from '../models/TestModel';
+import actions from '../actions';
 
 class TestCom extends React.Component<any> {
     handleClick = () => {
-        this.props.dispatch(testModel.handleMessage('name', 2));
+        this.props.dispatch(actions.test.handleMessage('name', 2));
     };
     render() {
         return <div onClick={this.handleClick}>click</div>;

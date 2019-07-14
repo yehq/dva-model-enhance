@@ -1,26 +1,12 @@
 {
     "name": "dva-model-enhance",
-    "version": "1.0.1",
+    "version": "1.1.1",
     "description": "use classes enhance dva model",
     "main": "./lib/index.js",
     "type": "./lib/index.d.ts",
     "scripts": {
         "test": "jest -u",
         "build": "tsc -w"
-    },
-    "jest": {
-        "roots": [
-            "__tests__"
-        ],
-        "testPathIgnorePatterns": [
-            "/node_modules/",
-            "__tests__/models/"
-        ],
-        "moduleFileExtensions": [
-            "js",
-            "ts",
-            "json"
-        ]
     },
     "repository": {
         "type": "git",
@@ -39,24 +25,23 @@
     },
     "homepage": "https://github.com/yehq/dva-model-enhance#readme",
     "dependencies": {
-        "@babel/plugin-proposal-class-properties": "^7.5.0",
         "dva": "^2.6.0-beta.10",
         "dva-model-extend": "^0.1.2",
         "path-to-regexp": "^3.0.0",
         "react": "^16.8.6",
         "react-dom": "^16.8.6",
-        "reflect-metadata": "^0.1.13",
-        "typescript": "^3.5.3"
+        "reflect-metadata": "^0.1.13"
     },
     "devDependencies": {
         "@babel/core": "^7.5.0",
+        "@babel/plugin-proposal-class-properties": "^7.5.0",
         "@babel/plugin-proposal-decorators": "^7.4.4",
         "@babel/plugin-transform-regenerator": "^7.4.5",
         "@babel/plugin-transform-runtime": "^7.5.0",
-        "@babel/preset-env": "^7.5.2",
-        "@babel/preset-typescript": "^7.3.3",
         "@types/jest": "^24.0.15",
-        "babel-jest": "^24.8.0",
-        "jest": "^24.8.0"
+        "babel-polyfill": "^6.26.0",
+        "jest": "^24.8.0",
+        "ts-jest": "^24.0.2",
+        "typescript": "^3.5.3"
     }
 }
