@@ -6,7 +6,7 @@ npm install dva-model-enhance
 
 ## use in dva
 
-定义基本的 model class
+#### 1、定义基本的 model class
 
 ```
 // ./example/dva/models/BaseModel.ts
@@ -35,12 +35,16 @@ export default BaseModel;
 
 ```
 
-业务 model 继承 基本 model
+#### 2、业务 model 继承 基本 model
 
 ```
 // ./example/dva/models/TestModel.ts
 import BaseModel from './BaseModel';
-import { reducer, effect, dvaModel } from '../../../src';
+import { reducer, effect, dvaModel, subscription, path } from '../../../src';
+import { SubscriptionAPI } from 'dva';
+import { Dispatch } from 'redux';
+import { Action } from 'history';
+import { match } from 'react-router';
 
 export interface TestModelState {
     name: string;
@@ -67,6 +71,20 @@ class TestModel extends BaseModel<TestModelState> {
         );
     }
 
+    /**
+     * dva subscription
+     */
+    @subscription
+    subscriptionTest({ history, dispatch }: SubscriptionAPI) {}
+
+    /**
+     * 当 路由 匹配时触发,
+     * matchResult: 匹配的参数和路径
+     * dispatch: redux dispatch
+     */
+    @path('/test/:id')
+    pathTest(matchResult: match<{ id?: string }>, dispatch: Dispatch, location: Location, action: Action) {}
+
     @reducer
     setName(name: string) {
         return {
@@ -80,7 +98,7 @@ export default TestModel;
 
 ```
 
-统一加载 model 实例
+#### 3、统一加载 model 实例
 
 ```
 // ./example/dva/actions.ts
@@ -92,7 +110,7 @@ export default {
 
 ```
 
-dva app 加载 model
+#### 4、dva app 加载 model
 
 ```
 // ./example/dva/index.ts
@@ -113,7 +131,7 @@ app.use(getModel(TestModel)); // 加载 dva model
 
 ```
 
-使用 class function 替代 dva action，获得类型约束
+#### 5、使用 class function 替代 dva action，获得类型约束
 
 ```
 // ./example/dva/components/TestCom.tsx
@@ -124,6 +142,14 @@ import actions from '../actions';
 
 class TestCom extends React.Component<any> {
     handleClick = () => {
+        /**
+         * 相当于：
+         *
+         * this.props.dispatch({
+         *     type: 'test/handleMessage',
+         *     payload: ['name', 2],
+         * });
+         */
         this.props.dispatch(actions.test.handleMessage('name', 2));
     };
     render() {

@@ -1,5 +1,9 @@
 import BaseModel from './BaseModel';
-import { reducer, effect, dvaModel } from '../../../src';
+import { reducer, effect, dvaModel, subscription, path } from '../../../src';
+import { SubscriptionAPI } from 'dva';
+import { Dispatch } from 'redux';
+import { Action } from 'history';
+import { match } from 'react-router';
 
 export interface TestModelState {
     name: string;
@@ -25,6 +29,20 @@ class TestModel extends BaseModel<TestModelState> {
             }),
         );
     }
+
+    /**
+     * dva subscription
+     */
+    @subscription
+    subscriptionTest({ history, dispatch }: SubscriptionAPI) {}
+
+    /**
+     * 当 路由 匹配时触发,
+     * matchResult: 匹配的参数和路径
+     * dispatch: redux dispatch
+     */
+    @path('/test/:id')
+    pathTest(matchResult: match<{ id?: string }>, dispatch: Dispatch, location: Location, action: Action) {}
 
     @reducer
     setName(name: string) {

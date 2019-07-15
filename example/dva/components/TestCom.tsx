@@ -5,6 +5,14 @@ import actions from '../actions';
 
 class TestCom extends React.Component<any> {
     handleClick = () => {
+        /**
+         * 相当于：
+         *
+         * this.props.dispatch({
+         *     type: 'test/handleMessage',
+         *     payload: ['name', 2],
+         * });
+         */
         this.props.dispatch(actions.test.handleMessage('name', 2));
     };
     render() {
