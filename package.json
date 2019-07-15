@@ -1,12 +1,13 @@
 {
     "name": "dva-model-enhance",
-    "version": "1.1.1",
+    "version": "1.2.2",
     "description": "use classes enhance dva model",
     "main": "./lib/index.js",
     "type": "./lib/index.d.ts",
     "scripts": {
         "test": "jest -u",
-        "build": "tsc -w"
+        "build": "tsc -w",
+        "pub": "npm publish --registry https://registry.npmjs.org/"
     },
     "repository": {
         "type": "git",
@@ -29,8 +30,7 @@
         "dva-model-extend": "^0.1.2",
         "path-to-regexp": "^3.0.0",
         "react": "^16.8.6",
-        "react-dom": "^16.8.6",
-        "reflect-metadata": "^0.1.13"
+        "react-dom": "^16.8.6"
     },
     "devDependencies": {
         "@babel/core": "^7.5.0",

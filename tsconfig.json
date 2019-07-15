@@ -3,7 +3,7 @@
         "target": "es5",
         "module": "ESNext",
         "lib": ["esnext", "es6", "dom"],
-        "types": ["reflect-metadata", "jest"],
+        "types": ["jest"],
         "jsx": "react",
         "declaration": true,
         "sourceMap": true,

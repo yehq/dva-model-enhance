@@ -1,6 +1,6 @@
-import 'reflect-metadata';
 import { SubscriptionOptions, SubscriptionPath } from '../interfaces';
 import { PATH } from '../symbols';
+import metadata from '../metadata';
 
 /**
  * @param url
@@ -18,11 +18,11 @@ import { PATH } from '../symbols';
  */
 function path(url: string, options?: SubscriptionOptions) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
-        if (!Reflect.hasOwnMetadata(PATH, target)) {
-            Reflect.defineMetadata(PATH, [], target);
+        if (!metadata.has(PATH, target)) {
+            metadata.define(PATH, [], target);
         }
-        const metadata: SubscriptionPath[] = Reflect.getMetadata(PATH, target);
-        metadata.push({
+        const paths: SubscriptionPath[] = metadata.get(PATH, target);
+        paths.push({
             url,
             options,
             listener: descriptor.value,

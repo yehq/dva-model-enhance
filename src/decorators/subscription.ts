@@ -1,6 +1,6 @@
-import 'reflect-metadata';
 import { SUBSCRIPTIONS, NAMESPACE } from '../symbols';
 import modelsContainer from '../modelsContainer';
+import metadata from '../metadata';
 
 /**
  * @param target
@@ -17,12 +17,12 @@ import modelsContainer from '../modelsContainer';
  *
  */
 function subscription(target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-    if (!Reflect.hasOwnMetadata(SUBSCRIPTIONS, target)) {
-        Reflect.defineMetadata(SUBSCRIPTIONS, {}, target);
+    if (!metadata.has(SUBSCRIPTIONS, target)) {
+        metadata.define(SUBSCRIPTIONS, {}, target);
     }
-    const metadata = Reflect.getMetadata(SUBSCRIPTIONS, target);
-    metadata[propertyKey] = () => {
-        const namespace = Reflect.getMetadata(NAMESPACE, target);
+    const subscriptions = metadata.get(SUBSCRIPTIONS, target);
+    subscriptions[propertyKey] = () => {
+        const namespace = metadata.get(NAMESPACE, target);
         let currentThis = target;
         if (namespace) {
             currentThis = modelsContainer.get(namespace) || target;
