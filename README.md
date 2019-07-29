@@ -11,7 +11,7 @@ npm install dva-model-enhance
 ```
 // ./example/dva/models/BaseModel.ts
 import { EffectsCommandMap as DvaEffectsCommandMap } from 'dva';
-import { reducer, dvaModel } from '../../../src';
+import { reducer, dvaModel } from 'dva-model-enhance';
 
 export interface EffectsCommandMap extends DvaEffectsCommandMap {
     put: any;
@@ -40,7 +40,7 @@ export default BaseModel;
 ```
 // ./example/dva/models/TestModel.ts
 import BaseModel from './BaseModel';
-import { reducer, effect, dvaModel, subscription, path } from '../../../src';
+import { reducer, effect, dvaModel, subscription, path } from 'dva-model-enhance';
 import { SubscriptionAPI } from 'dva';
 import { Dispatch } from 'redux';
 import { Action } from 'history';
@@ -116,7 +116,7 @@ export default {
 // ./example/dva/index.ts
 import dva from 'dva';
 import TestModel from './models/TestModel';
-import { getModel, modelsContainer } from '../../src';
+import { getModel, modelsContainer } from 'dva-model-enhance';
 import actions from './actions';
 
 const app = dva({
@@ -162,3 +162,27 @@ export default connect((state: { test: TestModelState }) => ({
 }))(TestCom);
 
 ```
+
+#### 6、config
+
+```
+import { setConfig } from 'dva-model-enhance';
+
+const app = dva({
+    namespacePrefixWarning: false,
+});
+app.router(() => null as any);
+app.start();
+// 设置 autoAddModel 为 true 后，不需要 app.use(model) 手动加载 model
+setConfig({
+    autoAddModel: true,
+    addModel: model => {
+        app.model(model);
+    },
+});
+```
+
+| 字段         | 类型                   | 必填 | 默认值 | 描述                                                                            |
+| ------------ | ---------------------- | ---- | ------ | ------------------------------------------------------------------------------- |
+| autoAddModel | boolean                | 否   | false  | 使用 model 修饰器的 class 是否自动设置 dva model, 为 true 时, 需要设置 addModel |
+| addModel     | (model: Model) => void | 否   | -      | autoAddModel 为 true 时，在 @model 中会自动调用 addModel 加载 model             |

@@ -1,4 +1,4 @@
-import { EffectType } from 'dva';
+import { EffectType, Model } from 'dva';
 import { Location, Action } from 'history';
 import { match } from 'react-router';
 import { Dispatch } from 'redux';
@@ -27,5 +27,17 @@ export interface SubscriptionOptions {
 export interface SubscriptionPath {
     url: string;
     options?: SubscriptionOptions;
-    listener: (matchResult: match<any>, dispatch: Dispatch, location: Location, action: Action) => void;
+    listener: (
+        matchResult: match<any>,
+        dispatch: Dispatch,
+        location: Location,
+        action: Action
+    ) => void;
+}
+
+export interface Config {
+    // 使用 model 修饰器的 class 是否自动设置 dva model
+    autoAddModel: boolean;
+    // autoAddModel 为 true 时，在 @model 中会自动调用 addModel 加载 model
+    addModel: (model: Model) => void;
 }

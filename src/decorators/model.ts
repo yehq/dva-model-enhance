@@ -1,10 +1,20 @@
 import modelExtend from 'dva-model-extend';
 import { DvaModelOptions, SubscriptionPath } from '../interfaces';
-import { NAMESPACE, MODEL, EFFECTS, REDUCERS, SUBSCRIPTIONS, PATH, STATE, STATE_KEY } from '../symbols';
+import {
+    NAMESPACE,
+    MODEL,
+    EFFECTS,
+    REDUCERS,
+    SUBSCRIPTIONS,
+    PATH,
+    STATE,
+    STATE_KEY,
+} from '../symbols';
 import { Subscription, Model } from 'dva';
 import { matchPath } from 'react-router';
 import modelsContainer from '../modelsContainer';
 import metadata from '../metadata';
+import config from '../config';
 
 function model(dvaModelOptions: DvaModelOptions) {
     const { namespace, state = {}, stateKey = 'state' } = dvaModelOptions;
@@ -33,7 +43,11 @@ function model(dvaModelOptions: DvaModelOptions) {
         const parentProto = Reflect.getPrototypeOf(target.prototype) as any;
         if (parentProto.constructor.name !== 'Object' && metadata.has(MODEL, parentProto)) {
             // 继承 model
-            metadata.define(MODEL, modelExtend(metadata.get(MODEL, parentProto), model), target.prototype);
+            metadata.define(
+                MODEL,
+                modelExtend(metadata.get(MODEL, parentProto), model),
+                target.prototype
+            );
         } else {
             metadata.define(MODEL, model, target.prototype);
         }
@@ -46,6 +60,10 @@ function model(dvaModelOptions: DvaModelOptions) {
         });
         if (namespace) {
             metadata.define(NAMESPACE, namespace, target.prototype);
+            if (config.autoAddModel) {
+                // 自动加载model
+                config.addModel(finalModel);
+            }
         }
     };
 }
