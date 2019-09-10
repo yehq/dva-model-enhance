@@ -166,20 +166,30 @@ export default connect((state: { test: TestModelState }) => ({
 #### 6、config
 
 ```
+import dva from 'dva';
 import { setConfig } from 'dva-model-enhance';
 
 const app = dva({
     namespacePrefixWarning: false,
 });
-app.router(() => null as any);
-app.start();
-// 设置 autoAddModel 为 true 后，不需要 app.use(model) 手动加载 model
+/**
+ * 设置 autoAddModel 为 true 后，不需要 app.use(model) 手动加载 model
+ * 同时请确保 setConfig 方法 在 model 的 decorator 执行之前调用。 比如 下面, 延迟 加载 "./App" 与 "./actions"
+ */
 setConfig({
     autoAddModel: true,
     addModel: model => {
         app.model(model);
     },
 });
+app.router(() => {
+  const App = require("./App").default;
+  return <App></App>;
+});
+app.start("#root");
+const actions = require("./actions").default;
+modelsContainer.put(actions);
+
 ```
 
 | 字段         | 类型                   | 必填 | 默认值 | 描述                                                                            |
