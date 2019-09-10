@@ -1,6 +1,6 @@
 {
     "name": "dva-model-enhance",
-    "version": "1.2.3",
+    "version": "1.2.5",
     "description": "use classes enhance dva model",
     "main": "./lib/index.js",
     "type": "./lib/index.d.ts",
