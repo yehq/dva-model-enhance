@@ -7,7 +7,7 @@ export interface TestModel2State {
     message: string;
 }
 
-@dvaModel({
+@dvaModel<TestModel2State>({
     namespace: 'test2',
     state: {
         name: 'initialName2',
@@ -22,7 +22,7 @@ class TestModel2 extends SecondModel<TestModel2State> {
             this.setState({
                 name,
                 age,
-            }),
+            })
         );
     }
 

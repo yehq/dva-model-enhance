@@ -2,9 +2,9 @@ import { EffectType, Model } from 'dva';
 import { Location, Action } from 'history';
 import { match } from 'react-router';
 import { Dispatch } from 'redux';
-export interface DvaModelOptions {
+export interface DvaModelOptions<State> {
     namespace?: string;
-    state?: any;
+    state?: State;
     stateKey?: string;
 }
 export interface EffectOptions {

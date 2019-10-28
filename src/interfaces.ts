@@ -3,11 +3,11 @@ import { Location, Action } from 'history';
 import { match } from 'react-router';
 import { Dispatch } from 'redux';
 
-export interface DvaModelOptions {
+export interface DvaModelOptions<State> {
     // dva model namespace
     namespace?: string;
     // dva model state
-    state?: any;
+    state?: State;
     // dva model state key
     stateKey?: string;
 }

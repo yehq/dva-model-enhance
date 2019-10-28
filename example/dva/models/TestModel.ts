@@ -11,7 +11,7 @@ export interface TestModelState {
     message: string;
 }
 
-@dvaModel({
+@dvaModel<TestModelState>({
     namespace: 'test',
     state: {
         name: 'initialName',

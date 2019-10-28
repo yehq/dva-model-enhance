@@ -16,7 +16,7 @@ import modelsContainer from '../modelsContainer';
 import metadata from '../metadata';
 import config from '../config';
 
-function model(dvaModelOptions: DvaModelOptions) {
+function model<State extends object = any>(dvaModelOptions: DvaModelOptions<State>) {
     const { namespace, state = {}, stateKey = 'state' } = dvaModelOptions;
     return (target: any) => {
         /**
