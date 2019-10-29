@@ -1,6 +1,6 @@
 {
     "name": "dva-model-enhance",
-    "version": "1.2.7",
+    "version": "1.2.8",
     "description": "use classes enhance dva model",
     "main": "./lib/index.js",
     "type": "./lib/index.d.ts",
@@ -42,6 +42,6 @@
         "babel-polyfill": "^6.26.0",
         "jest": "^24.8.0",
         "ts-jest": "^24.0.2",
-        "typescript": "^3.5.3"
+        "typescript": "^3.6.4"
     }
 }

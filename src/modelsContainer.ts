@@ -12,7 +12,7 @@ export default {
         return container.set(namespace, value);
     },
     put(models: { [namespace: string]: object }) {
-        Object.keys(models).map((key) => {
+        Object.keys(models).map(key => {
             this.set(key, models[key]);
         });
     },
@@ -21,7 +21,7 @@ export default {
             return container;
         }
         if (!container.has(namespace)) {
-            console.warn(`a ${namespace} key does not exist in modelsContainer`);
+            console.warn(`the key of '${namespace}' does not exist in modelsContainer`);
         }
         return container.get(namespace);
     },

@@ -8,7 +8,7 @@ npm install dva-model-enhance
 
 #### 1、定义基本的 model class
 
-```
+```ts
 // ./example/dva/models/BaseModel.ts
 import { EffectsCommandMap as DvaEffectsCommandMap } from 'dva';
 import { reducer, dvaModel } from 'dva-model-enhance';
@@ -32,12 +32,11 @@ class BaseModel<T extends object> {
 }
 
 export default BaseModel;
-
 ```
 
 #### 2、业务 model 继承 基本 model
 
-```
+```ts
 // ./example/dva/models/TestModel.ts
 import BaseModel from './BaseModel';
 import { reducer, effect, dvaModel, subscription, path } from 'dva-model-enhance';
@@ -67,7 +66,7 @@ class TestModel extends BaseModel<TestModelState> {
             this.setState({
                 name,
                 age,
-            }),
+            })
         );
     }
 
@@ -83,7 +82,12 @@ class TestModel extends BaseModel<TestModelState> {
      * dispatch: redux dispatch
      */
     @path('/test/:id')
-    pathTest(matchResult: match<{ id?: string }>, dispatch: Dispatch, location: Location, action: Action) {}
+    pathTest(
+        matchResult: match<{ id?: string }>,
+        dispatch: Dispatch,
+        location: Location,
+        action: Action
+    ) {}
 
     @reducer
     setName(name: string) {
@@ -95,24 +99,22 @@ class TestModel extends BaseModel<TestModelState> {
 }
 
 export default TestModel;
-
 ```
 
 #### 3、统一加载 model 实例
 
-```
+```ts
 // ./example/dva/actions.ts
 import TestModel from './models/TestModel';
 
 export default {
     test: new TestModel(),
 };
-
 ```
 
 #### 4、dva app 加载 model
 
-```
+```ts
 // ./example/dva/index.ts
 import dva from 'dva';
 import TestModel from './models/TestModel';
@@ -127,13 +129,11 @@ const app = dva({
 // 加载所有实例 用来动态设置 所有 model function 的 this 指向，根据namespace来匹配实例
 modelsContainer.put(actions);
 app.use(getModel(TestModel)); // 加载 dva model
-
-
 ```
 
 #### 5、使用 class function 替代 dva action，获得类型约束
 
-```
+```ts
 // ./example/dva/components/TestCom.tsx
 import React from 'react';
 import { connect } from 'dva';
@@ -160,12 +160,11 @@ export default connect((state: { test: TestModelState }) => ({
     name: state.test.name,
     age: state.test.age,
 }))(TestCom);
-
 ```
 
 #### 6、config
 
-```
+```ts
 import dva from 'dva';
 import { setConfig } from 'dva-model-enhance';
 
@@ -183,16 +182,31 @@ setConfig({
     },
 });
 app.router(() => {
-  const App = require("./App").default;
-  return <App></App>;
+    const App = require('./App').default;
+    return <App></App>;
 });
-app.start("#root");
-const actions = require("./actions").default;
+app.start('#root');
+const actions = require('./actions').default;
 modelsContainer.put(actions);
-
 ```
 
 | 字段         | 类型                   | 必填 | 默认值 | 描述                                                                            |
 | ------------ | ---------------------- | ---- | ------ | ------------------------------------------------------------------------------- |
 | autoAddModel | boolean                | 否   | false  | 使用 model 修饰器的 class 是否自动设置 dva model, 为 true 时, 需要设置 addModel |
 | addModel     | (model: Model) => void | 否   | -      | autoAddModel 为 true 时，在 @model 中会自动调用 addModel 加载 model             |
+
+#### 7、useDispatch
+
+```ts
+import { useDispatch as useEnhanceDispatch } from 'dva-model-enhance';
+import actions from '../actions';
+/**
+ * 使用 Proxy 代理 actions 用来增强 useDispatch 返回的 dispatch
+ * 使用 dispatch.test.add() 的形式 代替 dispatch(actions.test.add()) 的方式来调用;
+ */
+const useDispatch = <T extends keyof typeof actions = keyof typeof actions>() => {
+    return useEnhanceDispatch<Pick<typeof actions, T>>(actions) as any;
+};
+
+export default useDispatch;
+```

@@ -21,13 +21,13 @@ function subscription(target: any, propertyKey: string, descriptor: PropertyDesc
         metadata.define(SUBSCRIPTIONS, {}, target);
     }
     const subscriptions = metadata.get(SUBSCRIPTIONS, target);
-    subscriptions[propertyKey] = () => {
+    subscriptions[propertyKey] = (...args: any[]) => {
         const namespace = metadata.get(NAMESPACE, target);
         let currentThis = target;
         if (namespace) {
             currentThis = modelsContainer.get(namespace) || target;
         }
-        descriptor.value.bind(currentThis);
+        return descriptor.value.apply(currentThis, args);
     };
     return descriptor;
 }

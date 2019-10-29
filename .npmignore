@@ -1,0 +1,5 @@
+node_modules
+.vscode
+.examples
+.__tests__
+.prettierrc.js

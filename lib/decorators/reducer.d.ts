@@ -3,5 +3,7 @@ declare function reducer(target: any, propertyKey: string, descriptor: PropertyD
     configurable?: boolean | undefined;
     enumerable?: boolean | undefined;
     writable?: boolean | undefined;
+    get?(): any;
+    set?(v: any): void;
 };
 export default reducer;
