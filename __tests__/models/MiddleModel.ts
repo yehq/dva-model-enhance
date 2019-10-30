@@ -1,12 +1,11 @@
-import { effect, reducer, dvaModel } from '../../src';
-import BaseModel from './BaseModel';
+import { effect, reducer, dvaModel, BaseModel } from '../../src';
 
 @dvaModel({
     state: {
         base: '12123123',
     },
 })
-class MiddleModel<T extends object> extends BaseModel<T> {
+class MiddleModel<T extends object> extends BaseModel<T, any> {
     @effect()
     *fetchContent(content: string) {
         yield this.effects.put(this.setContent(content));
