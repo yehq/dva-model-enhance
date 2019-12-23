@@ -3,6 +3,6 @@ jest.config.js
 tsconfig.test.json
 yarn.lock
 .vscode
-.examples
+examples
 .__tests__
 .prettierrc.js
