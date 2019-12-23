@@ -1,7 +1,6 @@
-import { EffectType, Model } from 'dva';
+import { EffectType, Model, Dispatch } from 'dva';
 import { Location, Action } from 'history';
 import { match } from 'react-router';
-import { Dispatch } from 'redux';
 
 export interface DvaModelOptions<State> {
     // dva model namespace
@@ -29,7 +28,7 @@ export interface SubscriptionPath {
     options?: SubscriptionOptions;
     listener: (
         matchResult: match<any>,
-        dispatch: Dispatch,
+        dispatch: Dispatch<any>,
         location: Location,
         action: Action
     ) => void;
