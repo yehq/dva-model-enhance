@@ -1,7 +1,13 @@
 import { IConfig } from 'umi-types';
 
+const isDev = process.env.NODE_ENV === 'development';
+
 // ref: https://umijs.org/config/
 const config: IConfig = {
+  alias: {
+    // 在 production 环境将采用 .umi-production 文件而不是 .umi，添加 alias 防止 production 环境 build 出错
+    '@/pages/.umi': isDev ? '@/pages/.umi' : '@/pages/.umi-production',
+  },
   treeShaking: true,
   routes: [
     {

@@ -1,4 +1,7 @@
 node_modules
+jest.config.js
+tsconfig.test.json
+yarn.lock
 .vscode
 .examples
 .__tests__
