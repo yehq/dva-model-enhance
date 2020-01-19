@@ -210,18 +210,22 @@ const useDispatch = <T extends keyof typeof actions = keyof typeof actions>() =>
 export default useDispatch;
 ```
 
-## umi 
-> 结合 umi 脚手架，自动加载 class 形式的 model，同时能够自动实例化 class 同时加载到 全局容器 modelsContainer 中。并且按照一定的约定，自动收集 class model 导出的 State 类型。参考例子 [umi-example](https://github.com/yehq/dva-model-enhance/tree/master/examples/umi-example)  
+## umi
+
+> 结合 umi 脚手架，自动加载 class 形式的 model，同时能够自动实例化 class 同时加载到 全局容器 modelsContainer 中。并且按照一定的约定，自动收集 class model 导出的 State 类型。参考例子 [umi-example](https://github.com/yehq/dva-model-enhance/tree/master/examples/umi-example)
 
 需要搭配 [umi-plugin-dva-enhance](https://github.com/yehq/umi-plugin-dva-enhance) 使用，该插件 基于
 [umi-plugin-dva](https://github.com/umijs/umi/tree/master/packages/umi-plugin-dva) 添加了对 dva-model-enhance 的支持。
 
-在 umi 生成后的项目中 
+在 umi 生成后的项目中
+
 ```
 npm install dva-model-enhance
 npm install umi-plugin-dva-enhance -D
 ```
+
 添加 umi-plugin-dva-enhance 插件
+
 ```ts
 // .umirc.ts
 import { IConfig } from 'umi-types';
@@ -230,59 +234,62 @@ const isDev = process.env.NODE_ENV === 'development';
 
 // ref: https://umijs.org/config/
 const config: IConfig = {
-  alias: {
-    // 在 production 环境将采用 .umi-production 文件而不是 .umi，添加 alias 防止 production 环境 build 出错
-    '@/pages/.umi': isDev ? '@/pages/.umi' : '@/pages/.umi-production',
-  },
-  treeShaking: true,
-  routes: [],
-  plugins: [
-    [
-      'umi-plugin-react',
-      {
-        antd: true,
-        dva: false, // 关闭 umi-plugin-dva 插件
-        dynamicImport: { webpackChunkName: true },
-        title: 'umi-example',
-        dll: true,
-      },
+    alias: {
+        // 在 production 环境将采用 .umi-production 文件而不是 .umi，添加 alias 防止 production 环境 build 出错
+        '@/pages/.umi': isDev ? '@/pages/.umi' : '@/pages/.umi-production',
+    },
+    treeShaking: true,
+    routes: [],
+    plugins: [
+        [
+            'umi-plugin-react',
+            {
+                antd: true,
+                dva: false, // 关闭 umi-plugin-dva 插件
+                dynamicImport: { webpackChunkName: true },
+                title: 'umi-example',
+                dll: true,
+            },
+        ],
+        [
+            'umi-plugin-dva-enhance', // 添加 umi-plugin-dva-enhance 插件
+            {
+                // 配置和 umi-plugin-dva 一致
+                immer: true,
+                dynamicImport: true,
+            },
+        ],
     ],
-    [
-      'umi-plugin-dva-enhance', // 添加 umi-plugin-dva-enhance 插件
-      { // 配置和 umi-plugin-dva 一致
-        immer: true,
-        dynamicImport: true,
-      },
-    ],
-  ],
 };
 
 export default config;
-
 ```
 
 添加插件后，在运行后的 ./src/pages/.umi 文件夹中会多生成 actions.ts 和 StoreState.ts 文件，它们会随着 全局 和 pages 下的 models 文件里面的 model 文件改变而改变。
 
-* actions.ts 自动加载所有的 class model 并实例化添加到 modelsContainer 中
-* StoreState.ts 自动加载所有的 class model 中对外导出的 State 类型。导出的类型名称为 文件名加State后缀。例子如下
+-   actions.ts 自动加载所有的 class model 并实例化添加到 modelsContainer 中
+-   StoreState.ts 自动加载所有的 class model 中对外导出的 State 类型。导出的类型名称为 文件名加 State 后缀。例子如下
+
 ```ts
 import { TestState } from '/Users/yehangqi/Documents/work/web/dva-model-enhance/examples/umi-example/src/pages/Test/models/test';
 
 export default interface StoreState {
-	test: TestState,
+    test: TestState;
 }
 ```
 
 在文件外部通过引入 ./src/pages/.umi/actions.ts 和 ./src/pages/.umi/StoreState.ts 完善功能
 
 1. 添加增强的 useDispatch 文件，使得 dispatch 能直接访问 class model 中的方法和类型提示
+
 ```ts
 import { useDispatch as useEnhanceDispatch } from 'dva-model-enhance';
 import actions from './src/pages/.umi/actions';
-export default useEnhanceDispatch<typeof actions>(actions)
+export default useEnhanceDispatch<typeof actions>(actions);
 ```
 
 2. 添加增强的 useSelector 文件, 使得 state 能具有类型提示和添加浅比较
+
 ```ts
 import { useSelector as reactReduxUseSelector, shallowEqual } from 'react-redux';
 import StoreState from './src/pages/.umi/StoreState';
@@ -301,15 +308,31 @@ const useSelector = <TState extends StoreState, TSelected>(
 export default useSelector;
 ```
 
-
 ### 支持 umi 的 dynamicImport
-- 在 development 环境生成正常的 ./src/pages/.umi/actions 文件，带来类型提示。
-此时相当于全量引入，会造成 umi 中 model 按需加载实效。
-- 在 production 环境生成生成的 actions 文件如下
+
+-   在 development 环境生成正常的 ./src/pages/.umi/actions 文件，带来类型提示。
+    此时相当于全量引入，会造成 umi 中 model 按需加载失效。
+-   在 production 环境生成生成的 actions 文件如下
+
 ```
+import { modelsContainer } from 'dva-model-enhance';
+import global from '@/models/global';
+
+// 全局 models 直接实例化加载
+const globalActions = {
+	global: new global(),
+};
+
+modelsContainer.put(globalActions);
+
+/**
+ * production 模式下 全局和局部的 model 都走如下代理
+ * 局部的 model 在动态加载时 根据路由加载页面时候 再同时实例化
+ */
 const actions = new Proxy(
     {
-        test: {}
+        test: {},
+        global: {},
     },
     {
         get(t: object, p: string | number | symbol) {

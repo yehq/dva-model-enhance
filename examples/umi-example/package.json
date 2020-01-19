@@ -11,7 +11,7 @@
   "dependencies": {
     "antd": "^3.19.5",
     "dva": "^2.6.0-beta.6",
-    "dva-model-enhance": "^1.2.9",
+    "dva-model-enhance": "^1.2.11",
     "react": "^16.8.6",
     "react-dom": "^16.8.6"
   },
@@ -34,7 +34,7 @@
     "tslint-eslint-rules": "^5.4.0",
     "tslint-react": "^3.6.0",
     "umi": "^2.9.0",
-    "umi-plugin-dva-enhance": "^1.0.2",
+    "umi-plugin-dva-enhance": "^1.0.4",
     "umi-plugin-react": "^1.8.0",
     "umi-types": "^0.3.0"
   },
