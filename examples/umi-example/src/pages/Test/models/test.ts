@@ -2,26 +2,33 @@
  * @Author: yehq
  * @Date: 2019-10-24 16:02:53
  * @Last Modified by: yehq
- * @Last Modified time: 2019-10-30 11:20:18
+ * @Last Modified time: 2020-03-24 12:36:06
  */
 
-import { IState } from './types.d';
-import { effect, reducer, dvaModel, subscription, path, BaseModel } from 'dva-model-enhance';
-import { State } from '@/types';
+import { StoreState } from 'umi';
+import {
+  effect,
+  reducer,
+  dvaModel,
+  subscription,
+  path,
+  BaseModel,
+} from 'dva-model-enhance';
 import { match } from 'dva/router';
 import { Dispatch } from 'redux';
 import { Location, Action } from 'history';
 import { SubscriptionAPI } from 'dva';
+import { TestLocalState } from './types';
 
-export interface TestState extends IState {}
+export interface TestState extends TestLocalState {}
 
-@dvaModel<TestState>({
+@dvaModel<TestLocalState>({
   namespace: 'test',
   state: {
     count: 0,
   },
 })
-class Test extends BaseModel<TestState, State> {
+class Test extends BaseModel<TestState, StoreState> {
   @effect()
   *initCount() {
     const result = yield this.effects.call(() => Promise.resolve(100));
@@ -44,7 +51,7 @@ class Test extends BaseModel<TestState, State> {
    * dva subscription
    */
   @subscription
-  subscriptionTest({ history, dispatch }: SubscriptionAPI) {
+  private subscriptionTest({ history, dispatch }: SubscriptionAPI) {
     history.listen((location, action) => {
       console.log('route change');
     });
@@ -56,7 +63,7 @@ class Test extends BaseModel<TestState, State> {
    * dispatch: redux dispatch
    */
   @path('/test/:id')
-  pathTest(
+  private pathTest(
     matchResult: match<{ id?: string }>,
     dispatch: Dispatch,
     location: Location,

@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from '@/hooks';
 import { Button } from 'antd';
-import { Link } from 'dva/router';
+import { Link } from 'umi';
 
 interface Props {}
 
 const Page: React.FC<Props> = () => {
   const dispatch = useDispatch();
-  const count = useSelector(state => state.test.count);
+  const { count } = useSelector(state => ({ count: state.test.count }));
   useEffect(() => {
     dispatch.test.initCount();
   }, []);

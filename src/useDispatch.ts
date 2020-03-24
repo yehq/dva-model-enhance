@@ -21,9 +21,7 @@ export type OutDispatch<T extends BaseDispatchContent> = {
  * 使用 Proxy 代理 actions 用来增强 useDispatch 返回的 dispatch
  * 使用 dispatch.test.add() 的形式 代替 dispatch(actions.test.add()) 的方式来调用;
  */
-const useDispatch = <T extends BaseDispatchContent = any>(actions?: {
-    [key: string]: any;
-}): OutDispatch<T> => {
+const useDispatch = <T extends BaseDispatchContent = any>(actions?: T): OutDispatch<T> => {
     const dispatch = useDvaDispatch() as any;
     if (actions) {
         Object.keys(actions).forEach(key => {
@@ -32,7 +30,7 @@ const useDispatch = <T extends BaseDispatchContent = any>(actions?: {
                 {
                     get(_, paraKey) {
                         return function(...args: any[]) {
-                            return dispatch(actions[key][paraKey](...args));
+                            return dispatch(actions[key][paraKey.toString()](...args));
                         };
                     },
                 }

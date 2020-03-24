@@ -1,3 +1,3 @@
-export interface IState {
-    count: number;
+export interface TestLocalState {
+  count: number;
 }

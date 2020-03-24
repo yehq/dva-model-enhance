@@ -1,22 +1,31 @@
-import React from 'react';
-import styles from './index.css';
-import { Link } from 'dva/router';
-import { Button } from 'antd';
+import { Link } from 'umi';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from '@/hooks';
+import styles from './index.less';
 
-export default function() {
+export default () => {
+  const dispatch = useDispatch();
+  const test = useSelector(state => state.test);
+
+  useEffect(() => {
+    console.log(test, 'state');
+    dispatch.test.initCount();
+  }, []);
+
   return (
-    <div className={styles.normal}>
-      <div className={styles.welcome} />
-      <ul className={styles.list}>
-        <li>
-          To get started, edit <code>src/pages/index.js</code> and save to reload.
-        </li>
-        <li>
-          <Link to={'/test'}>
-            <Button>test</Button>
-          </Link>
-        </li>
-      </ul>
+    <div>
+      <h1 className={styles.title}>Page index</h1>
+      {test.count}
+      <button
+        onClick={() => {
+          dispatch.test.addCount();
+        }}
+      >
+        click
+      </button>
+      <Link to={'/test'}>
+        <button>test page</button>
+      </Link>
     </div>
   );
-}
+};
