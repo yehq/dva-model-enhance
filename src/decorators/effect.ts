@@ -1,7 +1,7 @@
 import { EffectsCommandMap } from 'dva';
 import { AnyAction } from 'redux';
 import { EffectOptions } from '../interfaces';
-import { EFFECTS, NAMESPACE, TEMPORARY_NAMESPACE } from '../symbols';
+import { EFFECTS, NAMESPACE, TEMPORARY_NAMESPACE, STATE_KEY } from '../symbols';
 import modelsContainer from '../modelsContainer';
 import metadata from '../metadata';
 
@@ -9,21 +9,17 @@ function effect(options?: EffectOptions) {
     return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
         const func = function*(action: AnyAction, effects: EffectsCommandMap) {
             const namespace = action.type.split('/')[0];
-
-            // /**
-            //  * 外部直接 dispatch({ type: 'type' }) 时
-            //  * 被继承的 class 方法上内部没办法获得 namespace
-            //  * 此时需要设置临时 namespace 使用
-            //  */
-            // if (!metadata.has(NAMESPACE, target)) {
-            //     const namespace = action.type.split('/')[0];
-            //     metadata.define(TEMPORARY_NAMESPACE, namespace, target);
-            // }
             const currentThis = modelsContainer.get(namespace) || target;
             currentThis.effects = effects;
+            const stateKey = metadata.get(STATE_KEY, target);
+            /**
+             * class 直接定义 state 会造成 state 初始化为 undefined, 此时负值为初始值
+             * 使用 @babel/plugin-transform-typescript 设置 allowDeclareFields 为 true。此时可以使用 declare state, 此时不会 被 undefined 覆盖
+             */
+            if (typeof currentThis[stateKey] === "undefined") {
+                currentThis[stateKey] = target[stateKey];
+            }
             const result = yield* descriptor.value.apply(currentThis, action.payload);
-
-            // Reflect.deleteMetadata(TEMPORARY_NAMESPACE, target);
             return result;
         };
         const targetFunc = options ? [func, options] : func;
@@ -38,7 +34,8 @@ function effect(options?: EffectOptions) {
         return {
             ...descriptor,
             value: function(...args: any[]) {
-                const namespace = metadata.get(NAMESPACE, this) || metadata.get(TEMPORARY_NAMESPACE, this);
+                const namespace =
+                    metadata.get(NAMESPACE, this) || metadata.get(TEMPORARY_NAMESPACE, this);
                 return {
                     type: `${namespace}/${propertyKey}`,
                     payload: args,
