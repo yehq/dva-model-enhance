@@ -16,17 +16,23 @@ yarn add dva-model-enhance
 
 #### 1、业务 model 继承 基本 model
 
+> 如下 是用 class 结合 decorator 的写法 来代替 dva 原生 model 的写法  
+> 可以通过 getModel 方法 来将 class 这种形式 转化为 dva 原生 model 来使用
+
 ```ts
 // ./examples/dva-example/src/models/test.ts
-import { IState } from './types';
 import { effect, reducer, dvaModel, subscription, path, BaseModel } from 'dva-model-enhance';
+// 全部的 redux state 类型
 import StoreState from '../StoreState';
 import { SubscriptionAPI } from 'dva';
 import { match } from 'react-router';
 import { Dispatch } from 'redux';
 import { Location, Action } from 'history';
 
-export interface TestState extends IState {}
+/**
+ * 当前 state 类型
+ */
+export interface TestState {}
 
 @dvaModel<TestState>({
     namespace: 'test',
@@ -113,6 +119,7 @@ const app = dva({
     namespacePrefixWarning: false, // 取消 dva 的警告
 });
 
+// 通过 getModel(Test) 来获取 dva 原生的 model
 app.model(getModel(Test)); // 加载 dva model
 
 app.router(router => {
