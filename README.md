@@ -14,9 +14,10 @@ yarn add dva-model-enhance
 
 ## use in dva
 
-#### 1、业务 model 继承 基本 model
+#### 1、编写 model
 
 > 如下 是用 class 结合 decorator 的写法 来代替 dva 原生 model 的写法  
+> 继承 BaseModel 来获取 this 中的 effects 和 state
 > 可以通过 getModel 方法 来将 class 这种形式 转化为 dva 原生 model 来使用
 
 ```ts
@@ -49,6 +50,20 @@ class Test extends BaseModel<TestState, StoreState> {
                 count: result,
             })
         );
+        // 调用其他 model
+        /**
+         * import actions from './actions'; // ./actions 文件为步骤 2 中定义的 actions 文件，提供了所有 class 的实例
+         * 
+         * this.effects.put(
+         *     actions.test.setState({ count: 1 })
+         * );
+         * 
+         * 或者
+         * this.effects.put({
+         *     type: 'test/setState',
+         *     payload: [{ count: 1 }], // payload 必须为数组 对应到方法中的参数
+         * });
+         */
     }
 
     @reducer
@@ -87,7 +102,7 @@ class Test extends BaseModel<TestState, StoreState> {
 export default Test;
 ```
 
-#### 2、实例化 class model，同时添加到 model 容器中
+#### 2、实例化 class model，同时添加到 model 容器中, 对外导出 actions
 
 ```ts
 // ./examples/dva-example/src/actions/actions.ts
@@ -181,24 +196,14 @@ const App: React.FC<Props> = ({ history }) => {
 export default App;
 ```
 
-#### 5、config (可以不设置)
+#### 5、config
 
 ```ts
 import dva from 'dva';
 import { setConfig } from 'dva-model-enhance';
 
 const app = dva({
-    namespacePrefixWarning: false,
-});
-/**
- * 设置 autoAddModel 为 true 后，不需要 app.use(model) 手动加载 model
- * 但是请确保 setConfig 方法 在 model 的 decorator 执行之前调用。 比如 下面, 延迟 加载 "./App" 与 "./actions"
- */
-setConfig({
-    autoAddModel: true,
-    addModel: model => {
-        app.model(model);
-    },
+    namespacePrefixWarning: false, // 取消 dva 对调用的警告
 });
 ```
 
@@ -213,14 +218,10 @@ setConfig({
 import { useDispatch as useEnhanceDispatch } from 'dva-model-enhance';
 import actions from '../actions';
 /**
- * 使用 Proxy 代理 actions 用来增强 useDispatch 返回的 dispatch
- * 使用 dispatch.test.add() 的形式 代替 dispatch(actions.test.add()) 的方式来调用;
+ * useEnhanceDispatch 使用 Proxy 代理 actions 用来增强 useDispatch 返回的 dispatch
+ * 此时可以使用 dispatch.test.add() 的形式 代替 dispatch(actions.test.add()) 的方式来调用;
  */
-const useDispatch = <T extends keyof typeof actions = keyof typeof actions>() => {
-    return useEnhanceDispatch<Pick<typeof actions, T>>(actions) as any;
-};
-
-export default useDispatch;
+export default () => useEnhanceDispatch(actions);
 ```
 
 ## umi 3
